@@ -1,0 +1,14 @@
+{
+  "name": "geonections",
+  "version": "0.0.1",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "author": "RichyHBM",
+  "license": "Simple BSD",
+  "dependencies": {
+    "express": "4.10.x",
+    "ws": "0.6.x"
+  }
+}
