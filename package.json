@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "app.js",
   "scripts": {
-    "start": "node ./app.js"
+    "start": "wget -N http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz -O ./GeoLite2-City.mmdb.gz && gunzip -q ./GeoLite2-City.mmdb.gz && node ./app.js"
   },
   "author": "RichyHBM",
   "license": "Simple BSD",

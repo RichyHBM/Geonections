@@ -8,6 +8,10 @@ wss.broadcast = function(data){
     });
 };
 
+//Read Geo-IP db
+var mmdbreader = require('maxmind-db-reader');
+var citiesDB = mmdbreader.openSync('./GeoLite2-City.mmdb');
+
 //Netstat watcher
 var spawn = require('child_process').spawn,
     netstat = spawn('watch', ['-d', '-n0', 'netstat -an']);
@@ -29,8 +33,24 @@ netstat.stdout.on('data', function (data) {
                    item.indexOf("192.168.") != 0 &&
                    classBRegex.test(item) == false;
         });
-        //For now just send array of IP's
-        wss.broadcast(ips.toString());
+
+        var locations = [];
+
+        //Get location from IP
+        ips.forEach(function each(ip) {
+            var city = {};
+
+            var geodata = citiesDB.getGeoDataSync(ip);
+
+            city.name = geodata.city.names.en;
+            city.lon = geodata.location.latitude;
+            city.lat = geodata.location.longitude;
+
+            locations.push(city);
+        });
+
+        //Send array of locations
+        wss.broadcast(JSON.stringify(locations));
     }
 });
 
