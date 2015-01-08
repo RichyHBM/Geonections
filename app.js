@@ -12,6 +12,8 @@ wss.broadcast = function(data){
 var spawn = require('child_process').spawn,
     netstat = spawn('watch', ['-d', '-n0', 'netstat -an']);
 
+var classBRegex = new RegExp('(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)', 'g');
+
 //Received new data from netstat
 netstat.stdout.on('data', function (data) {
     //get list of IP's
@@ -25,7 +27,7 @@ netstat.stdout.on('data', function (data) {
                    item.indexOf("127.0.0.1") != 0 &&
                    item.indexOf("10.") != 0 &&
                    item.indexOf("192.168.") != 0 &&
-                   item.test(/(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)/g) == false;
+                   classBRegex.test(item) == false;
         });
         //For now just send array of IP's
         wss.broadcast(ips.toString());
@@ -39,11 +41,12 @@ netstat.stderr.on('data', function (data) {
 //Express app
 var express = require('express');
 var app = express();
+var path = require('path');
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res) {
-    res.sendfile('./index.html');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(3000);
