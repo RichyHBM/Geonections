@@ -2,6 +2,11 @@ var ws = new WebSocket('ws://localhost:8080');
 
 var connections = [];
 
+ws.onclose = function(event) {
+    connections = [];
+    alert("Lost connection to the server");
+};
+
 ws.onmessage = function(Event, flags) {
 
     var listOfCoords = JSON.parse(Event.data);
