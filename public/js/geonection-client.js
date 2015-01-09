@@ -3,8 +3,25 @@ var ws = new WebSocket('ws://localhost:8080');
 var connections = [];
 
 ws.onmessage = function(Event, flags) {
-    console.debug( Event.data );
-    //add connection data with a timestamp
+
+    var listOfCoords = JSON.parse(Event.data);
+
+    //Start at 1 because element 0 is always the servers coords
+    for(var i = 1; i < listOfCoords.length; i++)
+    {
+        var geo = {};
+        geo.destination = {};
+        geo.destination.latitude = listOfCoords[0].lat;
+        geo.destination.longitude = listOfCoords[0].lon;
+
+        geo.origin = {};
+        geo.origin.latitude = listOfCoords[i].lat;
+        geo.origin.longitude = listOfCoords[i].lon;
+
+        //Display for 5 seconds
+        geo.expires = new Date().getTime() + 1000 * 5;
+        connections.push(geo);
+    }
 };
 
 var map = new Datamap({
@@ -19,6 +36,17 @@ var map = new Datamap({
 });
 
 setInterval(function () {
-    //draw arcs with map.arc(connections); ?
-    //remove stale connection data
+    //Draw arcs
+    map.arc(connections, {
+        strokeColor: '#DD1C77',
+        strokeWidth: 1.5,
+        arcSharpness: 0.5,
+        animationSpeed: 800
+    });
+
+    //Keep arcs that expire in the future
+    var now = new Date().getTime();
+    connections = connections.filter( function( item ) {
+        return item.expires > now;
+    });
 }, 500);
