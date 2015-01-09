@@ -14,6 +14,25 @@ wss.broadcast = function(data){
 var mmdbreader = require('maxmind-db-reader');
 var citiesDB = mmdbreader.openSync('./GeoLite2-City.mmdb');
 
+//Get my IP and my coordinates
+var http = require("http");
+var myLocation = null;
+
+http.get("http://curlmyip.com", function(res) {
+    var body = '';
+
+    res.on('data', function(d) {
+        body += d;
+        body = body.trim();
+    });
+    res.on('end', function() {
+        var geodata = citiesDB.getGeoDataSync(body);
+        myLocation = {};
+        myLocation.lat = geodata.location.latitude;
+        myLocation.lon = geodata.location.longitude;
+    });
+})
+
 //Netstat watcher
 var spawn = require('child_process').spawn,
     netstat = spawn('watch', ['-d', '-n0', 'netstat -an']);
@@ -22,6 +41,7 @@ var classBRegex = new RegExp('(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-
 
 //Received new data from netstat
 netstat.stdout.on('data', function (data) {
+    if(!myLocation) return;
     //get list of IP's
     var ips = data.toString().match(/\d{1,3}(?:\.\d{1,3}){3}(?::\d{1,5})?/g);
 
@@ -37,25 +57,24 @@ netstat.stdout.on('data', function (data) {
         });
 
         var locations = [];
-
+        //First element will always be servers coords
+        locations.push(myLocation);
         //Get location from IP
         ips.forEach(function each(ip) {
             var city = {};
-
+            
             var geodata = citiesDB.getGeoDataSync(ip);
 
             if(geodata && geodata.location){
-                city.lon = geodata.location.latitude;
-                city.lat = geodata.location.longitude;
+                city.lat = geodata.location.latitude;
+                city.lon = geodata.location.longitude;
 
                 locations.push(city);
             }
         });
-        
-        if(locations.length > 0){
-            //Send array of locations
-            wss.broadcast(JSON.stringify(locations));
-        }
+
+        //Send array of locations
+        wss.broadcast(JSON.stringify(locations));
     }
 });
 
