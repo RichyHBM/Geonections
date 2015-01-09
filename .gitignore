@@ -28,3 +28,4 @@ node_modules
 .lock-wscript
 
 # Custom files
+GeoLite2-City.mmdb

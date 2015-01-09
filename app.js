@@ -4,7 +4,9 @@ var WebSocketServer = require('ws').Server
 
 wss.broadcast = function(data){
     wss.clients.forEach(function each(client) {
-        client.send(data);
+        try {
+            client.send(data);
+        } catch (e) { }
     });
 };
 
@@ -27,11 +29,11 @@ netstat.stdout.on('data', function (data) {
         //Remove invalid IP's
         ips = ips.filter( function( item ) {
             //Filter out loopback, private and invalid IP's
-            return item.indexOf("0.0.0.0") != 0 && 
-                   item.indexOf("127.0.0.1") != 0 &&
-                   item.indexOf("10.") != 0 &&
-                   item.indexOf("192.168.") != 0 &&
-                   classBRegex.test(item) == false;
+            return item.indexOf("0.0.0.0") !== 0 &&
+                   item.indexOf("127.0.0.1") !== 0 &&
+                   item.indexOf("10.") !== 0 &&
+                   item.indexOf("192.168.") !== 0 &&
+                   classBRegex.test(item) === false;
         });
 
         var locations = [];
@@ -42,15 +44,18 @@ netstat.stdout.on('data', function (data) {
 
             var geodata = citiesDB.getGeoDataSync(ip);
 
-            city.name = geodata.city.names.en;
-            city.lon = geodata.location.latitude;
-            city.lat = geodata.location.longitude;
+            if(geodata && geodata.location){
+                city.lon = geodata.location.latitude;
+                city.lat = geodata.location.longitude;
 
-            locations.push(city);
+                locations.push(city);
+            }
         });
-
-        //Send array of locations
-        wss.broadcast(JSON.stringify(locations));
+        
+        if(locations.length > 0){
+            //Send array of locations
+            wss.broadcast(JSON.stringify(locations));
+        }
     }
 });
 
