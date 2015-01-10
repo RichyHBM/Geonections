@@ -1,10 +1,10 @@
 Geonections
 ===========
 
-A lightweight node.js service for visualising network connections made to a server
+A lightweight node.js service for visualising network connections made to a computer
 
-Requires the 'watch' and 'netstat' tools to be installed
+Requires the 'netstat' tool to be installed
 
-For Linux these should be installed, if not check with your package manager
+On a system that includes wget and gunzip, just npm install and npm start
 
-On Mac OSx these are available using brew if not already installed
+If you dont have wget or gunzip, download and unzip the MaxMind GeoLite2-City database and place in the root directory.

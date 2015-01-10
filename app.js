@@ -35,7 +35,7 @@ http.get("http://curlmyip.com", function(res) {
 
 //Netstat watcher
 var spawn = require('child_process').spawn,
-    netstat = spawn('watch', ['-d', '-n0', 'netstat -an']);
+    netstat = spawn('node', ['netstat-caller.js']);
 
 var classBRegex = new RegExp('(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)', 'g');
 
@@ -62,12 +62,12 @@ netstat.stdout.on('data', function (data) {
         //Get location from IP
         ips.forEach(function each(ip) {
             var city = {};
-            
             var geodata = citiesDB.getGeoDataSync(ip);
 
             if(geodata && geodata.location){
                 city.lat = geodata.location.latitude;
                 city.lon = geodata.location.longitude;
+                city.IP = ip;
 
                 locations.push(city);
             }
@@ -80,6 +80,7 @@ netstat.stdout.on('data', function (data) {
 
 netstat.stderr.on('data', function (data) {
     console.log('stderr: ' + data);
+    process.exit(1);
 });
 
 //Express app

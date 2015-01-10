@@ -14,6 +14,18 @@ ws.onmessage = function(Event, flags) {
     //Start at 1 because element 0 is always the servers coords
     for(var i = 1; i < listOfCoords.length; i++)
     {
+        var exists = false;
+
+        connections.forEach(function (item) {
+            if(item.IP === listOfCoords[i].IP)
+            {
+                item.expires = new Date().getTime() + 1000 * 4;
+                exists = true;
+            }
+        });
+
+        if(exists) continue;
+
         var geo = {};
         geo.destination = {};
         geo.destination.latitude = listOfCoords[0].lat;
@@ -23,8 +35,14 @@ ws.onmessage = function(Event, flags) {
         geo.origin.latitude = listOfCoords[i].lat;
         geo.origin.longitude = listOfCoords[i].lon;
 
+        geo.latitude = listOfCoords[i].lat;
+        geo.longitude = listOfCoords[i].lon;
+        geo.radius = 4;
+
+        geo.IP = listOfCoords[i].IP;
+
         //Display for 5 seconds
-        geo.expires = new Date().getTime() + 1000 * 5;
+        geo.expires = new Date().getTime() + 1000 * 4;
         connections.push(geo);
     }
 };
@@ -47,6 +65,11 @@ setInterval(function () {
         strokeWidth: 1.5,
         arcSharpness: 0.5,
         animationSpeed: 800
+    });
+
+    map.bubbles(connections, {
+        borderColor: '#0F0',
+        popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.IP + '</strong></div>'; }
     });
 
     //Keep arcs that expire in the future
