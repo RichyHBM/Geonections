@@ -35,7 +35,7 @@ http.get("http://curlmyip.com", function(res) {
 
 //Netstat watcher
 var spawn = require('child_process').spawn,
-    netstat = spawn('node', ['netstat-caller.js']);
+    netstat = spawn('node', ['IP-printer.js']);
 
 var classBRegex = new RegExp('(^172\\.1[6-9]\\.)|(^172\\.2[0-9]\\.)|(^172\\.3[0-1]\\.)', 'g');
 
