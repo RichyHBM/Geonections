@@ -3,7 +3,9 @@ Geonections
 
 A lightweight node.js service for visualising network connections made to a computer
 
-Requires the 'netstat' tool to be installed
+By default uses 'netstat' to retreive IP addresses of network connections, but this can be changed in the IP-printer.js script to monitor for IP addresses from logs or any other source
+
+Change the location of the websocket server in public/js/geonection-client.js, currently it will just attempt to connect to localhost
 
 On a system that includes wget and gunzip, just npm install and npm start
 
