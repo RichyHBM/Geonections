@@ -35,7 +35,7 @@ extractor.extract = function (data) {
             if(geodata && geodata.location){
                 connection.lat = geodata.location.latitude;
                 connection.lon = geodata.location.longitude;
-                connection.IP = ip;
+                connection.ip = ip;
 
                 locations.push(connection);
             }

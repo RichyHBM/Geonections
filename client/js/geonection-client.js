@@ -17,7 +17,7 @@ ws.onmessage = function(Event, flags) {
         var exists = false;
 
         connections.forEach(function (item) {
-            if(item.IP === listOfCoords[i].IP)
+            if(item.ip === listOfCoords[i].ip)
             {
                 item.expires = new Date().getTime() + 1000 * 4;
                 exists = true;
@@ -39,7 +39,7 @@ ws.onmessage = function(Event, flags) {
         geo.longitude = listOfCoords[i].lon;
         geo.radius = 4;
 
-        geo.IP = listOfCoords[i].IP;
+        geo.ip = listOfCoords[i].ip;
 
         //Display for 5 seconds
         geo.expires = new Date().getTime() + 1000 * 4;
@@ -69,7 +69,7 @@ setInterval(function () {
 
     map.bubbles(connections, {
         borderColor: '#0F0',
-        popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.IP + '</strong></div>'; }
+        popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.ip + '</strong></div>'; }
     });
 
     //Keep arcs that expire in the future
