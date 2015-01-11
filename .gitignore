@@ -29,3 +29,4 @@ node_modules
 
 # Custom files
 GeoLite2-City.mmdb
+GeoLite2-City.mmdb.gz
