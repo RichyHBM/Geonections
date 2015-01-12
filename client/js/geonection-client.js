@@ -1,6 +1,7 @@
 var ws = new WebSocket('ws://localhost:8080');
 
 var connections = [];
+var serverinfo = null;
 
 ws.onclose = function(event) {
     connections = [];
@@ -10,6 +11,16 @@ ws.onclose = function(event) {
 ws.onmessage = function(Event, flags) {
 
     var listOfCoords = JSON.parse(Event.data);
+
+    if(!serverinfo)
+    {
+        serverinfo = {};
+        serverinfo.latitude = listOfCoords[0].lat;
+        serverinfo.longitude = listOfCoords[0].lon;
+        serverinfo.radius = 2;
+
+        serverinfo.ip = listOfCoords[0].ip;
+    }
 
     //Start at 1 because element 0 is always the servers coords
     for(var i = 1; i < listOfCoords.length; i++)
@@ -40,12 +51,27 @@ ws.onmessage = function(Event, flags) {
         geo.radius = 4;
 
         geo.ip = listOfCoords[i].ip;
+        geo.country = listOfCoords[i].country;
 
+        pushToTable(geo);
         //Display for 5 seconds
         geo.expires = new Date().getTime() + 1000 * 4;
         connections.push(geo);
     }
 };
+
+var tableContents = [];
+var pushToTable = function (info)
+{
+    $('#table-info').empty();
+    //Maintain at most 8 entries
+    tableContents.push(info);
+    if(tableContents.length > 8)
+        tableContents.shift();
+    for(var i = 0; i < tableContents.length; i++){
+        $('#table-info').append('<tr><td>'+ tableContents[i].ip +'</td><td>'+ tableContents[i].country +'</td></tr>');
+    }
+}
 
 var map = new Datamap({
     element: document.getElementById('container'),
@@ -67,7 +93,7 @@ setInterval(function () {
         animationSpeed: 800
     });
 
-    map.bubbles(connections, {
+    map.bubbles(connections.concat(serverinfo), {
         borderColor: '#0F0',
         popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.ip + '</strong></div>'; }
     });

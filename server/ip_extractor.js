@@ -37,6 +37,12 @@ extractor.extract = function (data) {
                 connection.lon = geodata.location.longitude;
                 connection.ip = ip;
 
+                if(geodata.country && geodata.country.names){
+                    connection.country = geodata.country.names.en;
+                }else{
+                    connection.country = "Unknown";
+                }
+
                 locations.push(connection);
             }
         });

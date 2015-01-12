@@ -9,6 +9,20 @@ header{
     color: rgba(93, 151, 255, 1);
 }
 
+#table-container{
+    position: absolute;
+    z-index: 1;
+    top: 55vh;
+    display: inline-block;
+    background-color: rgba(147, 147, 147, 0.35);
+    color: #FFF;
+}
+
+#table-info td{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
 #container{
     position: relative;
     width: 100%;
