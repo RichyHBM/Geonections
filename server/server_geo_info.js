@@ -16,6 +16,11 @@ http.get("http://curlmyip.com", function(res) {
     res.on('end', function() {
         var geodata = geodb.getGeoDataSync(body);
 
+        if(geodata.country && geodata.country.names){
+            server.country = geodata.country.names.en;
+        }else{
+            server.country = "Unknown";
+        }
         server.ip = body;
         server.lat = geodata.location.latitude;
         server.lon = geodata.location.longitude;

@@ -18,6 +18,7 @@ ws.onmessage = function(Event, flags) {
         serverinfo.latitude = listOfCoords[0].lat;
         serverinfo.longitude = listOfCoords[0].lon;
         serverinfo.radius = 2;
+        serverinfo.country = listOfCoords[0].country;
 
         serverinfo.ip = listOfCoords[0].ip;
     }
@@ -95,7 +96,7 @@ setInterval(function () {
 
     map.bubbles(connections.concat(serverinfo), {
         borderColor: '#0F0',
-        popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.ip + '</strong></div>'; }
+        popupTemplate: function(geo, data) { return '<div class="hoverinfo"><strong>' + data.ip + '<br />' + data.country + '</strong></div>'; }
     });
 
     //Keep arcs that expire in the future

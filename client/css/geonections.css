@@ -9,6 +9,10 @@ header{
     color: rgba(93, 151, 255, 1);
 }
 
+.hoverinfo{
+    text-align:center;
+}
+
 #table-container{
     position: absolute;
     z-index: 1;
