@@ -7,6 +7,10 @@
   },
   "author": "RichyHBM",
   "license": "Simple BSD",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RichyHBM/Geonections.git"
+  },
   "dependencies": {
     "express": "4.10.x",
     "forever": "0.13.0",
